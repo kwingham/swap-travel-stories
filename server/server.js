@@ -1,13 +1,15 @@
 // Import necessary modules
 const express = require("express");
 const cors = require("cors");
-require("dotenv").config(); // Load environment variables
+require("dotenv").config();
+
+// Import Supabase client
 const { createClient } = require("@supabase/supabase-js");
 
-// Create Express app
+// Create express app
 const app = express();
-app.use(cors()); // Enable CORS
-app.use(express.json()); // Parse incoming JSON requests
+app.use(cors());
+app.use(express.json());
 
 // Get Supabase URL and Key from environment variables
 const supabaseUrl = process.env.SUPABASE_URL;
@@ -21,21 +23,63 @@ app.get("/", (req, res) => {
   res.send("Welcome to Swap Travel Stories API!");
 });
 
-// Route to test connection to Supabase
-app.get("/test-supabase", async (req, res) => {
+// ROUTES
+
+// Get all users (READ)
+app.get("/users", async (req, res) => {
   try {
-    // Replace 'users' with any table you have in Supabase
     const { data, error } = await supabase.from("users").select("*");
-    if (error) {
-      return res.status(500).json({ error: error.message });
-    }
+    if (error) throw error;
     res.status(200).json(data);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 });
 
-// Optional SUPABASE_URI for any PostgreSQL client connections
+// Add a new user (CREATE)
+app.post("/users", async (req, res) => {
+  try {
+    const { username, email, password } = req.body;
+    const { data, error } = await supabase
+      .from("users")
+      .insert([{ username, email, password }]);
+    if (error) throw error;
+    res.status(201).json(data);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Update a user (UPDATE)
+app.put("/users/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { email } = req.body;
+    const { data, error } = await supabase
+      .from("users")
+      .update({ email })
+      .match({ user_id: id });
+    if (error) throw error;
+    res.status(200).json(data);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Delete a user (DELETE)
+app.delete("/users/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { data, error } = await supabase
+      .from("users")
+      .delete()
+      .match({ user_id: id });
+    if (error) throw error;
+    res.status(200).json({ message: "User deleted successfully", data });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 // Get port from environment or default to 5000
 const PORT = process.env.PORT || 5000;
