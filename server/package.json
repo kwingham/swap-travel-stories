@@ -16,5 +16,6 @@
     "express": "^4.21.0",
     "pg": "^8.13.0"
   },
-  "description": ""
+  "description": "",
+  "type": "module"
 }
