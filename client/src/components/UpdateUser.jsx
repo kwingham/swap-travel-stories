@@ -7,7 +7,7 @@ function UpdateUser() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch(`https://swap-travel-stories-server.onrender.com/users/${id}`)
+    fetch(`http://localhost:8080/users/${id}`)
       .then((res) => res.json())
       .then((data) =>
         setFormData({ username: data.username, email: data.email })
@@ -18,14 +18,11 @@ function UpdateUser() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await fetch(
-        `https://swap-travel-stories-server.onrender.com/users/${id}`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData),
-        }
-      );
+      await fetch(`http://localhost:8080/users/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
       navigate("/");
     } catch (error) {
       console.error("Error updating user:", error);

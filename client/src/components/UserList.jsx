@@ -6,7 +6,7 @@ function UserList() {
   const [users, setUsers] = useState([]);
 
   const fetchUsers = () => {
-    fetch("https://swap-travel-stories-server.onrender.com/users")
+    fetch("http://localhost:8080/users")
       .then((res) => res.json())
       .then((data) => setUsers(data))
       .catch((error) => console.error("Error fetching users:", error));
@@ -18,12 +18,9 @@ function UserList() {
 
   const handleDeleteUser = async (id) => {
     try {
-      await fetch(
-        `https://swap-travel-stories-server.onrender.com/users/${id}`,
-        {
-          method: "DELETE",
-        }
-      );
+      await fetch(`http://localhost:8080/users/${id}`, {
+        method: "DELETE",
+      });
       setUsers(users.filter((user) => user.user_id !== id));
     } catch (error) {
       console.error("Error deleting user:", error);

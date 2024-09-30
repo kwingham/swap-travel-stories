@@ -12,7 +12,7 @@ function AddUser() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await fetch("https://swap-travel-stories-server.onrender.com/users", {
+      await fetch("http://localhost:8080/users", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
