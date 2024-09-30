@@ -1,58 +1,68 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
-const UpdateUser = ({ user, onUpdate }) => {
-  const [email, setEmail] = useState(user.email); // Start with the current email
-  const [username, setUsername] = useState(user.username); // Start with the current username
-  const [loading, setLoading] = useState(false);
+function UpdateUser() {
+  const [formData, setFormData] = useState({ username: "", email: "" });
+  const { id } = useParams();
+  const navigate = useNavigate();
 
-  const handleUpdate = async () => {
-    setLoading(true);
+  useEffect(() => {
+    fetch(`https://swap-travel-stories-server.onrender.com/users/${id}`)
+      .then((res) => res.json())
+      .then((data) =>
+        setFormData({ username: data.username, email: data.email })
+      )
+      .catch((error) => console.error("Error fetching user:", error));
+  }, [id]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     try {
-      // Make a PUT request to update the user
-      const response = await fetch(
-        `http://localhost:5000/users/${user.user_id}`,
+      await fetch(
+        `https://swap-travel-stories-server.onrender.com/users/${id}`,
         {
           method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email, username }), // Sending the updated email and username
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
         }
       );
-      const data = await response.json();
-      if (response.ok) {
-        console.log("User updated:", data);
-        onUpdate(); // Call the parent function to refresh the user list
-      } else {
-        console.error("Error updating user:", data.error);
-      }
+      navigate("/");
     } catch (error) {
       console.error("Error updating user:", error);
-    } finally {
-      setLoading(false);
     }
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
   };
 
   return (
     <div>
-      <h3>Update User</h3>
-      <input
-        type="text"
-        placeholder="Username"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-      />
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
-      <button onClick={handleUpdate} disabled={loading}>
-        {loading ? "Updating..." : "Update"}
-      </button>
+      <h2>Update User</h2>
+      <form onSubmit={handleSubmit}>
+        <label>Username:</label>
+        <input
+          name="username"
+          type="text"
+          value={formData.username}
+          onChange={handleChange}
+          required
+        />
+
+        <label>Email:</label>
+        <input
+          name="email"
+          type="email"
+          value={formData.email}
+          onChange={handleChange}
+          required
+        />
+
+        <button type="submit">Update User</button>
+      </form>
     </div>
   );
-};
+}
 
 export default UpdateUser;

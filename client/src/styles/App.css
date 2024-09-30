@@ -1,0 +1,25 @@
+.user-card {
+  border: 1px solid #ccc;
+  padding: 15px;
+  margin: 10px;
+  width: 250px;
+  text-align: left;
+}
+
+.user-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.user-card h3 {
+  margin-top: 0;
+}
+
+.button-group {
+  margin-top: 10px;
+}
+
+.button-group button {
+  margin-right: 5px;
+}
