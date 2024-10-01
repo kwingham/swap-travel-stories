@@ -1,0 +1,11 @@
+.logo-container {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 1000; /* Ensure it appears on top of other elements */
+}
+
+.logo {
+  width: 100px; /* Set the size of the logo */
+  height: auto; /* Maintain aspect ratio */
+}
